@@ -18,6 +18,7 @@ SearchService for cookbook project
     - Kibana is the UI client for us to interact with elastic search and can be accessed via a browser
     - To run Kibana locally: in a separate terminal, port-forward it `kubectl port-forward service/quickstart-kb-http 5601`
 - Then you can go to `localhost:5601` to access Kibana and interact with elastic search
+- Default credentials to use elastic search can be found in this [guide](https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-deploy-elasticsearch.html) , look for the `Get the credentials.` part
 - Quick start on indexing a document and perform simple search: https://www.elastic.co/guide/en/elasticsearch/reference/current/getting-started.html
     -  By `console`, the guide means console of Kibana which looks like this:
       ![image](https://github.com/user-attachments/assets/42598351-303e-4343-82ad-58d06d48b83a)
