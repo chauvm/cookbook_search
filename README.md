@@ -20,6 +20,7 @@ SearchService for cookbook project
 - Then you can go to `localhost:5601` to access Kibana and interact with elastic search
 - Quick start on indexing a document and perform simple search: https://www.elastic.co/guide/en/elasticsearch/reference/current/getting-started.html
     -  By `console`, the guide means console of Kibana which looks like this:
-      ![image](https://github.com/user-attachments/assets/7aaca52f-4936-438a-b14f-cc9c2c209a18)
+      ![image](https://github.com/user-attachments/assets/42598351-303e-4343-82ad-58d06d48b83a)
+
 
 
