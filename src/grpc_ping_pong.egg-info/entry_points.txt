@@ -1,0 +1,2 @@
+[console_scripts]
+ping_pong_server = main:main
