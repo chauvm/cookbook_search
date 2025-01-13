@@ -1,6 +1,20 @@
 # cookbook_search
 SearchService for cookbook project
 
+## Build, start and run Cookbook search gRPC server with kubernetes
+- Create the docker image named `tcc-cookbook-search`: `docker build . -t tcc-cookbook-search`
+    - Valicate the Docker image by `docker image ls`, you should see the image we've just created
+- Deploy the service:
+    - Apply the deployment: `kubectl apply -f k8/deployments/deployment.yaml`
+    - Apply the service: `kubectl apply -f k8/service/service.yaml`
+- We now have the deployed service, let's verify:
+    - Verify the deployment: `kubectl get deployments -n cookbook-search`
+    - Check the pods are running: `kubectl get pods -n cookbook-search`
+    - Verify the service `kubectl get services -n cookbook-search`
+- To run the service and access it locally: `kubectl port-forward service/cookbook-search-service 50051:50051 -n cookbook-search`
+- Run the client script 
+
+
 ## Setup Elastic Search server on Kubernetes
 - Install Docker Desktop
 - Setup k8s by Turn on Kubernetes on docker desktop https://docs.docker.com/desktop/kubernetes/
