@@ -12,7 +12,7 @@ SearchService for cookbook project
     - Check the pods are running: `kubectl get pods -n cookbook-search`
     - Verify the service `kubectl get services -n cookbook-search`
 - To run the service and access it locally: `kubectl port-forward service/cookbook-search-service 50051:50051 -n cookbook-search`
-- Run the client script 
+- Run the client script to test the connection: `python3 -m src.ping_pong_client`
 
 
 ## Setup Elastic Search server on Kubernetes
