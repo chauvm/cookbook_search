@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from src.server.ping_pong_server import PingPongServer
 
 import sys
-print('\n'.join(sys.path))
+# print('\n'.join(sys.path))
 
 
 def main():

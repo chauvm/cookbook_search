@@ -14,10 +14,10 @@ SearchService for cookbook project
 - To run the service and access it locally: `kubectl port-forward service/cookbook-search-service 50051:50051 -n cookbook-search`
     - Example of a successfully deployed service running:
 <img width="637" alt="image" src="https://github.com/user-attachments/assets/9a1064b0-1ee6-47c4-b4a0-86ffc323e8a8" />
-- Run the client script to test the connection: `python3 -m src.ping_pong_client`
+- Run the client script to test the connection: `python3 -m src.client.ping_pong_client`
     - If both server and client work, the client will print out:
 ```
-❯ python3 -m src.ping_pong_client
+❯ python3 -m src.client.ping_pong_client
 Received from server: Pong: Hello, Server!
 ```
 
