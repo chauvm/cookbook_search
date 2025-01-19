@@ -14,6 +14,7 @@ SearchService for cookbook project
 - To run the service and access it locally, run this in a separate terminal from the root of this app directory: `kubectl port-forward service/cookbook-search-service 50051:50051 -n cookbook-search`
     - Example of a successfully deployed service running:
 <img width="637" alt="image" src="https://github.com/user-attachments/assets/9a1064b0-1ee6-47c4-b4a0-86ffc323e8a8" />
+
 - Run the client script to test the connection: `python3 -m src.client.client`. We will not use this file in production, this is just to test if the server is running and responding.
     - If both server and client work, the client will print out:
 ```
