@@ -3,24 +3,30 @@ SearchService for cookbook project
 
 ## Build, start and run Cookbook search gRPC server with kubernetes
 - Create the docker image named `tcc-cookbook-search`: `docker build . -t tcc-cookbook-search`
-    - Valicate the Docker image by `docker image ls`, you should see the image we've just created
+    - Validate the Docker image by `docker image ls`, you should see the image we've just created
 - Deploy the service:
-    - Apply the deployment: `kubectl apply -f k8/deployments/deployment.yaml`
-    - Apply the service: `kubectl apply -f k8/service/service.yaml`
+    - Apply the deployment: `kubectl apply -f k8s/deployments/deployment.yaml`
+    - Apply the service: `kubectl apply -f k8s/service/service.yaml`
 - We now have the deployed service, let's verify:
     - Verify the deployment: `kubectl get deployments -n cookbook-search`
     - Check the pods are running: `kubectl get pods -n cookbook-search`
     - Verify the service `kubectl get services -n cookbook-search`
-- To run the service and access it locally: `kubectl port-forward service/cookbook-search-service 50051:50051 -n cookbook-search`
+- To run the service and access it locally, run this in a separate terminal from the root of this app directory: `kubectl port-forward service/cookbook-search-service 50051:50051 -n cookbook-search`
     - Example of a successfully deployed service running:
 <img width="637" alt="image" src="https://github.com/user-attachments/assets/9a1064b0-1ee6-47c4-b4a0-86ffc323e8a8" />
-- Run the client script to test the connection: `python3 -m src.client.ping_pong_client`
+- Run the client script to test the connection: `python3 -m src.client.client`. We will not use this file in production, this is just to test if the server is running and responding.
     - If both server and client work, the client will print out:
 ```
-❯ python3 -m src.client.ping_pong_client
+❯ python3 -m src.client.client
 Received from server: Pong: Hello, Server!
 ```
-
+And server will print out (upon client sending request to it):
+```
+kubectl port-forward service/cookbook-search-service 50051:50051 -n cookbook-search
+Forwarding from 127.0.0.1:50051 -> 50051
+Forwarding from [::1]:50051 -> 50051
+Handling connection for 50051
+```
 
 ## Setup Elastic Search server on Kubernetes
 - Install Docker Desktop
@@ -46,3 +52,11 @@ Received from server: Pong: Hello, Server!
 
 
 
+## Notes on cleaning up containers if you need to remove and rebuild a new one
+- Get the docker image id associate with `tcc-cookbook-search`: `docker image ls`
+- For example, if the docker image ID is `73a81f3c01a9`, to remove containers created from a Docker image with ID `73a81f3c01a9` and created by Kubernetes using kubectl apply deployment.yaml, follow these steps:
+    - Delete the k8s deployment: `kubectl delete -f k8/deployments/deployment.yaml`
+        - If you don't have access to the deployment.yaml file, you can delete the deployment by its name. To get the deployment name of this cookbook search namespace: `kubectl get deployments -n cookbook-search` - the deployment name of this app is `cookbook-search-deployment` ( you can check it in `k8s/deployement/deployment.yaml`)
+        - And then delete the deployment: `kubectl delete deployment <deployment-name>` , replace `<deployment-name>` with the actual name of your deployment
+    - Remove docker container: `docker rm $(docker ps -a -q --filter ancestor=73a81f3c01a9)`
+    - After executing these commands, both the Docker containers and the Kubernetes deployment associated.with the specified image will be removed. Then you can delete the docker image by `docker image rm <image-id>`

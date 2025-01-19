@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from src.server.ping_pong_server import PingPongServer
+from src.server.server import SearchServer
 
 import sys
 # print('\n'.join(sys.path))
@@ -9,7 +9,7 @@ import sys
 def main():
     load_dotenv()  # This loads the variables from .env
     port = int(os.getenv('GRPC_PORT', 50051))  # Default to 50051 if not set
-    server = PingPongServer(port)
+    server = SearchServer(port)
     try:
         server.start()
     except KeyboardInterrupt:
