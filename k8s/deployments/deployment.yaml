@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cookbook-search-deployment # Name of the pod
+  name: cookbook-search # Name of the pod
   namespace: cookbook-search # Namespace of the pod
   labels:
     app: cookbook-search
