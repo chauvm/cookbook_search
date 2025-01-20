@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cookbook-search # Name of the pod
+  namespace: cookbook-search # Namespace of the pod
+  labels:
+    app: cookbook-search
+spec:
+  replicas: 2 # Number of pods to run
+  selector:
+    matchLabels:
+      app: cookbook-search # so that service/...yaml can find the pods
+  template:
+    metadata:
+      labels:
+        app: cookbook-search
+    spec:
+      containers:
+      - name: tcc-cookbook-search
+        image: tcc-cookbook-search:latest # avoid using latest tag in production; should use commit hash or version number; pin an image version and just update the version number in staging
+        imagePullPolicy: Never # To make it pull from local Docker image. TODO: use Always in production / after Docker image is pushed to Docker Hub
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+        ports:
+        - containerPort: 50051 # follow the pod in image
