@@ -11,7 +11,7 @@ RUN pip install --no-cache -r requirements/prod.txt
 # Copy the rest of the application
 # Copy the rest of the application code into the container
 COPY src /app/src
-COPY test /app/test
+
 COPY .env.example /app/.env
 
 # Use environment variables from .env file
