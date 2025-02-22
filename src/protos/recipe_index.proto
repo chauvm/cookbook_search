@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package recipeindex;
+
+service RecipeSearchService {
+    rpc IndexRecipe (IndexRecipeRequest) returns (IndexRecipeResponse);
+}
+
+message IndexRecipeRequest {
+    string id = 1;
+    string title = 2;
+    string instructions = 3;
+    string notes = 4;
+    bool is_public = 5;
+}
+
+message IndexRecipeResponse {
+    bool success = 1;
+    string error_message = 2;
+}

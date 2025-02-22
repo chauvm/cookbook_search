@@ -1,11 +1,42 @@
+import logging
 import grpc
 from concurrent import futures
-from src.generated.search_pb2 import PongResponse
-from src.generated.search_pb2_grpc import PingPongServicer, add_PingPongServicer_to_server
+from src.generated.recipe_index_pb2_grpc import RecipeSearchServiceServicer, add_RecipeSearchServiceServicer_to_server
+from src.generated.recipe_index_pb2 import IndexRecipeResponse, IndexRecipeRequest
+from src.server.elasticsearch_client import ElasticsearchClient
+# from src.generated.search_pb2 import PongResponse
+# from src.generated.search_pb2_grpc import PingPongServicer, add_PingPongServicer_to_server
 
-class PingPongService(PingPongServicer):
-    def Ping(self, request, context):
-        return PongResponse(message=f"Pong: {request.message}")
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler()],
+)
+
+logger = logging.getLogger(__name__)
+
+class RecipeIndexService(RecipeSearchServiceServicer):
+    def __init__(self):
+        super().__init__()
+        self.es_client = ElasticsearchClient()
+
+    def IndexRecipe(self, request, context):
+        logger.info(f"Indexing recipe: {request}")
+        try:
+            # Index the recipe in Elasticsearch
+            recipe = {
+                "id": request.id,
+                "title": request.title,
+                "instructions": request.instructions,
+                "notes": request.notes,
+                "isPublic": request.is_public
+            }
+            self.es_client.index_recipe(recipe=recipe)
+            logger.info(f"Recipe indexed successfully.")
+            return IndexRecipeResponse(success=True)
+        except Exception as e:
+            logger.error(f"Error indexing recipe: {e}")
+            return IndexRecipeResponse(success=False, error_message=str(e))
 
 class SearchServer:
     def __init__(self, port):
@@ -14,7 +45,7 @@ class SearchServer:
 
     def start(self):
         self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-        add_PingPongServicer_to_server(PingPongService(), self.server)
+        add_RecipeSearchServiceServicer_to_server(RecipeIndexService(), self.server)
         self.server.add_insecure_port(f'[::]:{self.port}')
         self.server.start()
         print(f"Server started on port {self.port}")

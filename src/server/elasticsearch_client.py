@@ -63,17 +63,17 @@ class ElasticsearchClient:
         results = [hit["_source"] for hit in response.get("hits", {}).get("hits", [])]
         return results
     
-    def index_recipe(self, recipe: dict, index: str = "recipes"): 
+    def index_recipe(self, recipe: dict, index: str = "recipe"): 
         """
         Index a recipe in Elasticsearch.
         
-        :param recipe: The recipe to index.
+        :param recipe: The recipe content to index.
         :param index: The Elasticsearch index name where recipes are stored.
         """
-        fields_to_index = ["title", "instructions", "notes"]
+        id_field = "id"
         response = self.es_client.index(
             index=index, 
             id = recipe['id'], 
-            document={k: recipe[k] for k in fields_to_index}
+            document={k: recipe[k] for k in recipe if k != id_field}
         )
         return response

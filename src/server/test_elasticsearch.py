@@ -23,15 +23,16 @@ def test_search():
 def test_recipe_indexing():
     es_client = ElasticsearchClient()
     recipe = {
-        "id": 1,
+        "id": '123',
         "title": "Example Recipe",
         "instructions": "Mix ingredients and bake at 350 degrees.",
         "notes": "Use organic ingredients for better taste.",
+        "isPublic": True
     }
     res = es_client.index_recipe(recipe)
     print("Recipe indexed successfully:", res)
 
 if __name__ == "__main__":
-    # test_connection()
-    # test_search()
+    test_connection()
+    test_search()
     test_recipe_indexing()
