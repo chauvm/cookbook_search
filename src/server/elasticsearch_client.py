@@ -5,14 +5,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Initialize logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[logging.StreamHandler()],
 )
 
-
 logger = logging.getLogger(__name__)
+logger.info("Logger is working!")  # Debug log to check logger initialization
 
 class ElasticsearchClient:
     _instance = None
@@ -38,27 +39,44 @@ class ElasticsearchClient:
             logger.info("Elasticsearch client initialized.")
         return cls._instance
 
-
-    def search_recipe(self, phrase: str, index: str = "recipes", field: str = "title", size: int = 10):
+    def search_recipe(self, query_type: str, field: str, value: str, fields: list = None, range_filter: dict = None, sort: list = None, index: str = "recipes", size: int = 10):
         """
         Search for a phrase in the indexed recipe.
-        
-        :param phrase: The phrase to search for.
-        :param index: The Elasticsearch index name where recipes are stored.
-        :param field: The field within the index to search in.
-        :param size: The number of results to return.
-        :return: List of matching recipes.
         """
-        query = {
-            "query": {
-                "match_phrase": {
-                    field: phrase
-                }
-            },
-            "size": size
-        }
-        
+        query = {}
+
+        # Validate query_type and value
+        if query_type not in ["match", "multi_match", "match_phrase", "term", "exists", "range"]:
+            raise ValueError(f"Invalid query_type: {query_type}")
+
+        if query_type not in ["exists", "range"] and not value:
+            raise ValueError("Search value cannot be empty for this query type.")
+
+        if query_type == "match":
+            query["query"] = {"match": {field: value}}
+        elif query_type == "multi_match":
+            if not fields:
+                raise ValueError("Fields must be specified for multi_match query.")
+            query["query"] = {"multi_match": {"query": value, "fields": fields}}
+        elif query_type == "match_phrase":
+            query["query"] = {"match_phrase": {field: value}}
+        elif query_type == "term":
+            query["query"] = {"term": {field: value}}
+        elif query_type == "exists":
+            query["query"] = {"exists": {"field": field}}
+        elif query_type == "range":
+            if not range_filter:
+                raise ValueError("Range filter cannot be empty for range query.")
+            query["query"] = {"range": {field: range_filter}}
+
+        if sort:
+            query["sort"] = [{s["field"]: {"order": s["order"]}} for s in sort]
+
+        query["size"] = size
+
+        logger.warning(f"Executing ES query: {query}")  # Fixed: use logger.warning, not logger.warnings
+
+        # Execute query
         response = self.es_client.search(index=index, body=query)
-        
-        results = [hit["_source"] for hit in response.get("hits", {}).get("hits", [])]
-        return results
+
+        return response

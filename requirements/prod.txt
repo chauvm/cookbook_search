@@ -3,4 +3,3 @@ grpcio-tools==1.69.0
 python-dotenv==1.0.1
 
 elasticsearch>=8.0.0
-logging
