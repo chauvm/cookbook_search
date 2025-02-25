@@ -27,13 +27,7 @@ class TestRecipeIndexService(unittest.TestCase):
         response = self.service.IndexRecipe(self.mock_request, context)
 
         # Assertions
-        self.mock_es_client.return_value.index_recipe.assert_called_once_with(recipe={
-            "id": "1",
-            "title": "Example Recipe",
-            "instructions": "Mix ingredients and bake at 350 degrees.",
-            "notes": "Use organic ingredients for better taste.",
-            "isPublic": True
-        })
+        self.mock_es_client.return_value.index_recipe.assert_called_once_with(recipe=self.mock_request)
         self.assertIsInstance(response, IndexRecipeResponse)
         self.assertTrue(response.success)
         self.assertEqual(response.error_message, "")

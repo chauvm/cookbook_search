@@ -20,19 +20,22 @@ class RecipeIndexService(RecipeSearchServiceServicer):
         super().__init__()
         self.es_client = ElasticsearchClient()
 
-    def IndexRecipe(self, request, context):
+    def IndexRecipe(self, request: IndexRecipeRequest, context: grpc.ServicerContext) -> IndexRecipeResponse:
+        """
+        Indexes a recipe in Elasticsearch.
+
+        Args:
+            request (dict): The request containing the recipe data to be indexed.
+            context (grpc.ServicerContext): The gRPC context.
+
+        Returns:
+            IndexRecipeResponse: The response indicating the success or failure of the indexing operation.
+        """
         logger.info(f"Indexing recipe: {request}")
         try:
             # Index the recipe in Elasticsearch
-            recipe = {
-                "id": request.id,
-                "title": request.title,
-                "instructions": request.instructions,
-                "notes": request.notes,
-                "isPublic": request.is_public
-            }
-            self.es_client.index_recipe(recipe=recipe)
-            logger.info(f"Recipe indexed successfully.")
+            self.es_client.index_recipe(recipe=request)
+            logger.info(f"Recipe with id={request.id} indexed successfully.".format(request.id))
             return IndexRecipeResponse(success=True)
         except Exception as e:
             logger.error(f"Error indexing recipe: {e}")

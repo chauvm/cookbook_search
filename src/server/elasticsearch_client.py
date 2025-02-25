@@ -1,6 +1,7 @@
 import logging
 import os
 from elasticsearch import Elasticsearch
+from src.generated.recipe_index_pb2 import IndexRecipeRequest
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -13,6 +14,8 @@ logging.basicConfig(
 
 
 logger = logging.getLogger(__name__)
+
+RECIPE_INDEX_NAME = "recipe"
 
 class ElasticsearchClient:
     _instance = None
@@ -63,17 +66,24 @@ class ElasticsearchClient:
         results = [hit["_source"] for hit in response.get("hits", {}).get("hits", [])]
         return results
     
-    def index_recipe(self, recipe: dict, index: str = "recipe"): 
+    def index_recipe(self, recipe: IndexRecipeRequest): 
         """
         Index a recipe in Elasticsearch.
         
         :param recipe: The recipe content to index.
         :param index: The Elasticsearch index name where recipes are stored.
         """
-        id_field = "id"
+        index = RECIPE_INDEX_NAME
+        recipe_id = recipe.id
+        document = {
+            "title": recipe.title,
+            "instructions": recipe.instructions,
+            "notes": recipe.notes,
+            "isPublic": recipe.is_public
+        }
         response = self.es_client.index(
             index=index, 
-            id = recipe['id'], 
-            document={k: recipe[k] for k in recipe if k != id_field}
+            id = recipe_id, 
+            document=document
         )
         return response
