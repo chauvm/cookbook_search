@@ -1,6 +1,10 @@
 import os
 import subprocess
 
+"""
+usage: python3 generate_proto.py
+"""
+
 # Paths
 PROTO_DIR = "./src/protos"
 OUTPUT_DIR = "./src/generated"
