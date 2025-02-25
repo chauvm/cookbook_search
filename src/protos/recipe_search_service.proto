@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package recipe;
+
+service RecipeSearchService {
+  rpc SearchRecipes (SearchRequest) returns (SearchResponse);
+}
+
+message SearchRequest {
+  string query_type = 1;
+  string field = 2;
+  string value = 3;
+  repeated string fields = 4;
+  map<string, string> range_filter = 5;
+  repeated SortOption sort = 6;
+}
+
+message SortOption {
+  string field = 1;
+  string order = 2; // "asc" or "desc"
+}
+
+message Recipe {
+  string id = 1;
+  string title = 2;
+  string owner_id = 3;
+  bool is_public = 4;
+  string instructions = 5;
+  string notes = 6;
+  bool deleted = 7;
+  string hashtags = 10;
+}
+
+message SearchResponse {
+  repeated Recipe recipes = 1;
+}
