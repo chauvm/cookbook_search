@@ -3,9 +3,10 @@ import os
 from elasticsearch import Elasticsearch
 from dotenv import load_dotenv
 
+# from recipe_search_service_pb2 import SearchRequest  # Make sure you have this import if using the enum
+
 load_dotenv()
 
-# Initialize logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -15,68 +16,131 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 logger.info("Logger is working!")  # Debug log to check logger initialization
 
+
 class ElasticsearchClient:
     _instance = None
 
-    def __new__(cls, host: str = 'localhost', port: int = 9200, username: str = 'elastic', password: str = None):
+    def __new__(
+        cls,
+        host: str = "localhost",
+        port: int = 9200,
+        username: str = "elastic",
+        password: str = None,
+    ):
         if password is None:
-            password = os.getenv('ES_PASSWORD')
+            password = os.getenv("ES_PASSWORD")
         if not password:
             raise ValueError("ES_PASSWORD environment variable is not set.")
 
         if cls._instance is None:
             logger.info("Initializing Elasticsearch client...")
-            cls._instance = super(ElasticsearchClient, cls).__new__(cls)
+            cls._instance = super().__new__(cls)
             cls._instance.es_client = Elasticsearch(
-                hosts=[{
-                    'host': host,
-                    'port': port,
-                    'scheme': 'https'  # Specify HTTPS scheme
-                }],
+                hosts=[
+                    {
+                        "host": host,
+                        "port": port,
+                        "scheme": "https",  # Use HTTPS
+                    }
+                ],
                 basic_auth=(username, password),
-                verify_certs=False  # Disable SSL verification for self-signed certificates
+                verify_certs=False,  # For self-signed certs
             )
             logger.info("Elasticsearch client initialized.")
         return cls._instance
 
-    def search_recipe(self, query_type: str, field: str, value: str, fields: list = None, range_filter: dict = None, sort: list = None, index: str = "recipes", size: int = 10):
+    @staticmethod
+    def _build_generic(key: str, field: str, value: str) -> dict:
         """
-        Search for a phrase in the indexed recipe.
+        For queries that share the structure: { key: { field: value } }
+        E.g. {"match": {field: value}}, {"term": {field: value}}, etc.
         """
-        query = {}
+        return {key: {field: value}}
 
-        # Validate query_type and value
-        if query_type not in ["match", "multi_match", "match_phrase", "term", "exists", "range"]:
-            raise ValueError(f"Invalid query_type: {query_type}")
+    @staticmethod
+    def build_es_query(
+        query_type_enum: int,
+        field: str,
+        value: str,
+        fields: list = None,
+        range_filter: dict = None,
+    ):
+        """
+        Go directly from the QueryType enum to an Elasticsearch query dict.
+        - MATCH, MATCH_PHRASE, TERM => same structure (use _build_generic).
+        - MULTI_MATCH, EXISTS, RANGE => special shapes.
+        """
+        # If you have a real SearchRequest.QueryType, do:
+        #
+        #   enum_name = SearchRequest.QueryType.Name(query_type_enum)
+        #
+        # For demonstration, let's define a quick local map:
+        enum_map = {
+            0: "match",
+            1: "multi_match",
+            2: "match_phrase",
+            3: "term",
+            4: "exists",
+            5: "range",
+        }
+        enum_name = enum_map.get(query_type_enum)
+        if not enum_name:
+            raise ValueError(f"Invalid query_type enum: {query_type_enum}")
 
-        if query_type not in ["exists", "range"] and not value:
-            raise ValueError("Search value cannot be empty for this query type.")
+        query_key = enum_name.lower()
 
-        if query_type == "match":
-            query["query"] = {"match": {field: value}}
-        elif query_type == "multi_match":
+        # Special cases or fallback to generic
+        if query_key == "multi_match":
             if not fields:
                 raise ValueError("Fields must be specified for multi_match query.")
-            query["query"] = {"multi_match": {"query": value, "fields": fields}}
-        elif query_type == "match_phrase":
-            query["query"] = {"match_phrase": {field: value}}
-        elif query_type == "term":
-            query["query"] = {"term": {field: value}}
-        elif query_type == "exists":
-            query["query"] = {"exists": {"field": field}}
-        elif query_type == "range":
+            return {
+                "multi_match": {
+                    "query": value,
+                    "fields": fields,
+                }
+            }
+        elif query_key == "exists":
+            return {
+                "exists": {
+                    "field": field
+                }
+            }
+        elif query_key == "range":
             if not range_filter:
                 raise ValueError("Range filter cannot be empty for range query.")
-            query["query"] = {"range": {field: range_filter}}
+            return {
+                "range": {
+                    field: range_filter
+                }
+            }
+        else:
+            # For match, match_phrase, term, etc.
+            return ElasticsearchClient._build_generic(query_key, field, value)
 
+    def search_recipe(
+        self,
+        query_type: int,
+        field: str,
+        value: str,
+        fields: list = None,
+        range_filter: dict = None,
+        sort: list = None,
+        index: str = "recipes",
+        size: int = 10,
+    ):
+        """
+        Search for a phrase in the indexed recipe, going directly from enum -> query.
+        """
+        # Because build_es_query is a staticmethod, we call it via the class
+        query_part = ElasticsearchClient.build_es_query(
+            query_type, field, value, fields, range_filter
+        )
+
+        query = {"query": query_part, "size": size}
         if sort:
             query["sort"] = [{s["field"]: {"order": s["order"]}} for s in sort]
 
-        query["size"] = size
+        logger.warning(f"Executing ES query: {query}")
 
-        logger.warning(f"Executing ES query: {query}")  # Fixed: use logger.warning, not logger.warnings
-
-        # Execute query
         response = self.es_client.search(index=index, body=query)
-
         return response

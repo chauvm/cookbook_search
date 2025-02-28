@@ -7,7 +7,15 @@ service RecipeSearchService {
 }
 
 message SearchRequest {
-  string query_type = 1;
+  enum QueryType {
+    MATCH = 0;
+    MULTI_MATCH = 1;
+    MATCH_PHRASE = 2;
+    TERM = 3;
+    EXISTS = 4;
+    RANGE = 5;
+  }
+  QueryType query_type = 1;
   string field = 2;
   string value = 3;
   repeated string fields = 4;
@@ -28,7 +36,7 @@ message Recipe {
   string instructions = 5;
   string notes = 6;
   bool deleted = 7;
-  string hashtags = 10;
+  repeated string hashtags = 8;
 }
 
 message SearchResponse {

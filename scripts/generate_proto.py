@@ -4,7 +4,7 @@ import subprocess
 # Paths
 PROTO_DIR = "./src/protos"
 OUTPUT_DIR = "./src/generated"
-OUTPUT_SEARCH_CLIENT_DIR = os.getenv("OUTPUT_SEARCH_CLIENT_DIR") or "/Users/rubybui/class/techcare/cookbook/cookbook_api/search_proxy/generated"
+OUTPUT_SEARCH_CLIENT_DIR = os.getenv("OUTPUT_SEARCH_CLIENT_DIR")
 
 # Ensure output directories exist
 os.makedirs(OUTPUT_DIR, exist_ok=True)

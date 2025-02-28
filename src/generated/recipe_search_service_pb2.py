@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1brecipe_search_service.proto\x12\x06recipe\"\xe5\x01\n\rSearchRequest\x12\x12\n\nquery_type\x18\x01 \x01(\t\x12\r\n\x05\x66ield\x18\x02 \x01(\t\x12\r\n\x05value\x18\x03 \x01(\t\x12\x0e\n\x06\x66ields\x18\x04 \x03(\t\x12<\n\x0crange_filter\x18\x05 \x03(\x0b\x32&.recipe.SearchRequest.RangeFilterEntry\x12 \n\x04sort\x18\x06 \x03(\x0b\x32\x12.recipe.SortOption\x1a\x32\n\x10RangeFilterEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"*\n\nSortOption\x12\r\n\x05\x66ield\x18\x01 \x01(\t\x12\r\n\x05order\x18\x02 \x01(\t\"\xb8\x01\n\x06Recipe\x12\n\n\x02id\x18\x01 \x01(\t\x12\r\n\x05title\x18\x02 \x01(\t\x12\x10\n\x08owner_id\x18\x03 \x01(\t\x12\x11\n\tis_public\x18\x04 \x01(\x08\x12\x14\n\x0cinstructions\x18\x05 \x01(\t\x12\r\n\x05notes\x18\x06 \x01(\t\x12\x0f\n\x07\x64\x65leted\x18\x07 \x01(\x08\x12\x12\n\ncreated_at\x18\x08 \x01(\t\x12\x12\n\nupdated_at\x18\t \x01(\t\x12\x10\n\x08hashtags\x18\n \x01(\t\"1\n\x0eSearchResponse\x12\x1f\n\x07recipes\x18\x01 \x03(\x0b\x32\x0e.recipe.Recipe2U\n\x13RecipeSearchService\x12>\n\rSearchRecipes\x12\x15.recipe.SearchRequest\x1a\x16.recipe.SearchResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1brecipe_search_service.proto\x12\x06recipe\"\xe2\x02\n\rSearchRequest\x12\x33\n\nquery_type\x18\x01 \x01(\x0e\x32\x1f.recipe.SearchRequest.QueryType\x12\r\n\x05\x66ield\x18\x02 \x01(\t\x12\r\n\x05value\x18\x03 \x01(\t\x12\x0e\n\x06\x66ields\x18\x04 \x03(\t\x12<\n\x0crange_filter\x18\x05 \x03(\x0b\x32&.recipe.SearchRequest.RangeFilterEntry\x12 \n\x04sort\x18\x06 \x03(\x0b\x32\x12.recipe.SortOption\x1a\x32\n\x10RangeFilterEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"Z\n\tQueryType\x12\t\n\x05MATCH\x10\x00\x12\x0f\n\x0bMULTI_MATCH\x10\x01\x12\x10\n\x0cMATCH_PHRASE\x10\x02\x12\x08\n\x04TERM\x10\x03\x12\n\n\x06\x45XISTS\x10\x04\x12\t\n\x05RANGE\x10\x05\"*\n\nSortOption\x12\r\n\x05\x66ield\x18\x01 \x01(\t\x12\r\n\x05order\x18\x02 \x01(\t\"\x90\x01\n\x06Recipe\x12\n\n\x02id\x18\x01 \x01(\t\x12\r\n\x05title\x18\x02 \x01(\t\x12\x10\n\x08owner_id\x18\x03 \x01(\t\x12\x11\n\tis_public\x18\x04 \x01(\x08\x12\x14\n\x0cinstructions\x18\x05 \x01(\t\x12\r\n\x05notes\x18\x06 \x01(\t\x12\x0f\n\x07\x64\x65leted\x18\x07 \x01(\x08\x12\x10\n\x08hashtags\x18\x08 \x03(\t\"1\n\x0eSearchResponse\x12\x1f\n\x07recipes\x18\x01 \x03(\x0b\x32\x0e.recipe.Recipe2U\n\x13RecipeSearchService\x12>\n\rSearchRecipes\x12\x15.recipe.SearchRequest\x1a\x16.recipe.SearchResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -34,15 +34,17 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_SEARCHREQUEST_RANGEFILTERENTRY']._loaded_options = None
   _globals['_SEARCHREQUEST_RANGEFILTERENTRY']._serialized_options = b'8\001'
   _globals['_SEARCHREQUEST']._serialized_start=40
-  _globals['_SEARCHREQUEST']._serialized_end=269
-  _globals['_SEARCHREQUEST_RANGEFILTERENTRY']._serialized_start=219
-  _globals['_SEARCHREQUEST_RANGEFILTERENTRY']._serialized_end=269
-  _globals['_SORTOPTION']._serialized_start=271
-  _globals['_SORTOPTION']._serialized_end=313
-  _globals['_RECIPE']._serialized_start=316
-  _globals['_RECIPE']._serialized_end=500
-  _globals['_SEARCHRESPONSE']._serialized_start=502
-  _globals['_SEARCHRESPONSE']._serialized_end=551
-  _globals['_RECIPESEARCHSERVICE']._serialized_start=553
-  _globals['_RECIPESEARCHSERVICE']._serialized_end=638
+  _globals['_SEARCHREQUEST']._serialized_end=394
+  _globals['_SEARCHREQUEST_RANGEFILTERENTRY']._serialized_start=252
+  _globals['_SEARCHREQUEST_RANGEFILTERENTRY']._serialized_end=302
+  _globals['_SEARCHREQUEST_QUERYTYPE']._serialized_start=304
+  _globals['_SEARCHREQUEST_QUERYTYPE']._serialized_end=394
+  _globals['_SORTOPTION']._serialized_start=396
+  _globals['_SORTOPTION']._serialized_end=438
+  _globals['_RECIPE']._serialized_start=441
+  _globals['_RECIPE']._serialized_end=585
+  _globals['_SEARCHRESPONSE']._serialized_start=587
+  _globals['_SEARCHRESPONSE']._serialized_end=636
+  _globals['_RECIPESEARCHSERVICE']._serialized_start=638
+  _globals['_RECIPESEARCHSERVICE']._serialized_end=723
 # @@protoc_insertion_point(module_scope)
