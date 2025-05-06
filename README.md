@@ -34,7 +34,7 @@ Handling connection for 50051
 - Setup k8s by Turn on Kubernetes on docker desktop https://docs.docker.com/desktop/kubernetes/
 - Install these utilities for k8s: https://github.com/chauvm/techcare_onboarding/wiki/Kubernetes 
 - Install k8s CRDs and Operator (pre-requisite for elastic search): https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/#customresourcedefinitions 
-    - (Notes) There are 2 basic steps here: install CRS and install operator with its RBAC rule - just follow the link above
+    - (Notes) There are 2 basic steps here: install CRD and install operator with its RBAC rule - https://www.elastic.co/docs/deploy-manage/deploy/cloud-on-k8s/required-rbac-permissions
     - Once finished, you can check the elastic system namespace:
       ![kubectl get -n elastic-system pods](https://github.com/user-attachments/assets/79c56c3c-19e0-4505-9278-3ce699adc339)
     - Or run `kubectl describe crd elasticsearch`    
